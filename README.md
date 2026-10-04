@@ -16,7 +16,7 @@ This helper skips the click entirely. It reads the sitekey from the DOM, gets a 
 
 This package uses [Peak](https://peak.fo/?utm_source=github&utm_medium=readme&utm_campaign=packages&utm_content=selenium-turnstile) to solve Turnstile.
 - Solve Cloudflare Turnstile & the 5s challenge in about a second
-- Pay only for successful solves, from $1 / 1,000
+- $0.90 per 1,000 successful Turnstile solves, down to $0.35 at volume
 - 1,000 free solves to start, no card.
 → [Get your free API key](https://peak.fo/?utm_source=github&utm_medium=readme&utm_campaign=packages&utm_content=selenium-turnstile) · [Docs](https://peak.fo/docs/turnstile?utm_source=github&utm_medium=readme&utm_campaign=packages&utm_content=selenium-turnstile) · [Pricing](https://peak.fo/pricing?utm_source=github&utm_medium=readme&utm_campaign=packages&utm_content=selenium-turnstile)
 

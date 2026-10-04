@@ -18,7 +18,7 @@ from .peak import (
 )
 from .solver import inject_token, read_sitekey, solve_turnstile
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "solve_turnstile",

@@ -77,6 +77,7 @@ class PeakClient:
             headers={
                 "Content-Type": "application/json",
                 "X-API-Key": self.api_key,
+                "User-Agent": "selenium-turnstile/0.1.1 (+https://github.com/CircuitSavage/selenium-turnstile)",
             },
         )
         try:
