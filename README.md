@@ -63,12 +63,23 @@ solve_turnstile(
     url=None,             # defaults to driver.current_url
     task_type="turnstiletask",
     timeout=180.0,
+    app_id=None,          # optional; earns you a share of each solve
 ) -> str                  # the injected token
 ```
 
 Helpers `read_sitekey(driver)` and `inject_token(driver, token)` are exposed for finer control. Peak also supports `task_type="cloudflare5stask"` for the 5s interstitial challenge.
 
 The API key is read from the `PEAK_API_KEY` environment variable by default; you can also pass it explicitly. Never hardcode a real key.
+
+## Earn with your app ID
+
+Pass `app_id="app_your_id"` (or set the `PEAK_APP_ID` environment variable) to earn 5% of every solve routed through this package, paid as Peak solve credit. It is optional and does not change whether a solve succeeds or how fast it returns.
+
+```python
+solve_turnstile(driver, app_id="app_your_id")   # or: export PEAK_APP_ID=app_your_id
+```
+
+Create an app id at [peak.fo/dashboard/developer](https://peak.fo/dashboard/developer); details at [peak.fo/earn](https://peak.fo/earn).
 
 ## Legitimate use
 

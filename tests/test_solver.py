@@ -111,6 +111,28 @@ class SolveTurnstileTests(unittest.TestCase):
                 token = solve_turnstile(driver)
         self.assertEqual(token, TEST_TOKEN)
 
+    def test_app_id_omitted_by_default(self):
+        driver = FakeDriver()
+        with mock.patch.dict(os.environ, {}, clear=True):
+            with mock.patch.object(PeakClient, "_post", side_effect=_peak_success) as post:
+                solve_turnstile(driver, api_key="pk_test_key")
+        self.assertNotIn("appId", post.call_args.args[0])
+
+    def test_app_id_forwarded_when_passed(self):
+        driver = FakeDriver()
+        with mock.patch.dict(os.environ, {}, clear=True):
+            with mock.patch.object(PeakClient, "_post", side_effect=_peak_success) as post:
+                solve_turnstile(driver, api_key="pk_test_key", app_id="app_abc123")
+        self.assertEqual(post.call_args.args[0]["appId"], "app_abc123")
+
+    def test_app_id_from_env(self):
+        driver = FakeDriver()
+        env = {"PEAK_API_KEY": "pk_env_key", "PEAK_APP_ID": "app_env"}
+        with mock.patch.dict(os.environ, env, clear=True):
+            with mock.patch.object(PeakClient, "_post", side_effect=_peak_success) as post:
+                solve_turnstile(driver)
+        self.assertEqual(post.call_args.args[0]["appId"], "app_env")
+
     def test_sitekey_fallback_via_execute_script(self):
         # find_element finds nothing; the JS DOM scan supplies the sitekey.
         driver = FakeDriver(sitekey=None)

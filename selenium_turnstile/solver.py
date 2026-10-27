@@ -112,6 +112,7 @@ def solve_turnstile(
     task_type: str = TASK_TURNSTILE,
     api_url: Optional[str] = None,
     timeout: float = 180.0,
+    app_id: Optional[str] = None,
 ) -> str:
     """Solve the Turnstile challenge on ``driver``'s current page.
 
@@ -144,6 +145,7 @@ def solve_turnstile(
         api_url=api_url or DEFAULT_API_URL,
         proxy=proxy,
         timeout=timeout,
+        app_id=app_id,
     )
     token = client.solve(sitekey, url, proxy=proxy, task_type=task_type)
     inject_token(driver, token)

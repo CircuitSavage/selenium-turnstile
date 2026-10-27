@@ -7,6 +7,7 @@ on its own. The HTTP call uses the standard library only.
 from __future__ import annotations
 
 import json
+import os
 import urllib.error
 import urllib.request
 from typing import Optional
@@ -28,10 +29,12 @@ def build_solve_payload(
     url: str,
     proxy: Optional[str] = None,
     task_type: str = TASK_TURNSTILE,
+    app_id: Optional[str] = None,
 ) -> dict:
     """Build the JSON body for POST https://api.peak.fo/solve.
 
     ``proxy`` is omitted entirely when not provided, per the Peak contract.
+    ``app_id`` is sent as ``appId`` when set, earning you a share of the solve.
     """
     payload = {
         "task_type": task_type,
@@ -40,6 +43,8 @@ def build_solve_payload(
     }
     if proxy:
         payload["proxy"] = proxy
+    if app_id:
+        payload["appId"] = app_id
     return payload
 
 
@@ -52,6 +57,7 @@ class PeakClient:
         api_url: str = DEFAULT_API_URL,
         proxy: Optional[str] = None,
         timeout: float = 180.0,
+        app_id: Optional[str] = None,
     ) -> None:
         if not api_key:
             raise PeakError(
@@ -62,6 +68,9 @@ class PeakClient:
         self.api_url = api_url
         self.proxy = proxy
         self.timeout = timeout
+        # Your Peak app ID. Falls back to PEAK_APP_ID so you can earn a
+        # revenue share without any code change. See "Earn with your app ID".
+        self.app_id = app_id or os.getenv("PEAK_APP_ID") or None
 
     def _post(self, payload: dict) -> dict:
         """Send the payload to Peak and return the parsed JSON response.
@@ -77,7 +86,7 @@ class PeakClient:
             headers={
                 "Content-Type": "application/json",
                 "X-API-Key": self.api_key,
-                "User-Agent": "selenium-turnstile/0.1.1 (+https://github.com/CircuitSavage/selenium-turnstile)",
+                "User-Agent": "selenium-turnstile/0.2.0 (+https://github.com/CircuitSavage/selenium-turnstile)",
             },
         )
         try:
@@ -98,13 +107,18 @@ class PeakClient:
         url: str,
         proxy: Optional[str] = None,
         task_type: str = TASK_TURNSTILE,
+        app_id: Optional[str] = None,
     ) -> str:
         """Solve a Turnstile challenge and return the token string.
 
         Raises :class:`PeakError` on failure.
         """
         payload = build_solve_payload(
-            sitekey, url, proxy=proxy or self.proxy, task_type=task_type
+            sitekey,
+            url,
+            proxy=proxy or self.proxy,
+            task_type=task_type,
+            app_id=app_id or self.app_id,
         )
         result = self._post(payload)
         if not result.get("success"):
